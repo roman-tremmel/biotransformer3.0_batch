@@ -191,19 +191,40 @@ bt_run_batch <- function(df, app_dir = ".", btType = "allHuman", steps = 1L,
   jar <- bt_find_jar(app_dir, offline = offline)
 
   one <- function(i) {
-    r <- bt_run_one(df$smiles[i], name = df$name[i], id = i, app_dir = app_dir,
-                    jar = jar, btType = btType, steps = steps,
-                    cyp_mode = cyp_mode, timeout = timeout, xmx = xmx)
-    if (!is.null(progress)) try(progress(i, n, df$name[i]), silent = TRUE)
-    r
+    bt_run_one(df$smiles[i], name = df$name[i], id = i, app_dir = app_dir,
+               jar = jar, btType = btType, steps = steps,
+               cyp_mode = cyp_mode, timeout = timeout, xmx = xmx)
   }
+  # Progress is reported from THIS (main) process only -- a Shiny Progress
+  # handle cannot be used inside a forked mclapply worker.
+  tick <- function(done, name) if (!is.null(progress)) try(progress(done, n, name), silent = TRUE)
 
   workers <- max(1L, as.integer(workers))
-  if (workers > 1L && .Platform$OS.type == "unix") {
-    results <- parallel::mclapply(seq_len(n), one, mc.cores = workers,
-                                  mc.preschedule = FALSE)
+  results <- vector("list", n)
+  if (workers > 1L && .Platform$OS.type == "unix" && n > 1L) {
+    # run in chunks of `workers`; update progress in the parent after each chunk
+    idx <- split(seq_len(n), ceiling(seq_len(n) / workers))
+    done <- 0L
+    for (chunk in idx) {
+      part <- parallel::mclapply(chunk, one, mc.cores = workers, mc.preschedule = FALSE)
+      for (p in seq_along(chunk)) {
+        r <- part[[p]]
+        if (inherits(r, "try-error") || !is.list(r))
+          r <- list(status = "error", n_metabolites = 0L, results = NULL,
+                    message = paste("worker error:", trimws(as.character(r))), seconds = NA_real_)
+        results[[chunk[p]]] <- r
+        done <- done + 1L
+        tick(done, df$name[chunk[p]])
+      }
+    }
   } else {
-    results <- lapply(seq_len(n), one)
+    for (i in seq_len(n)) {
+      r <- tryCatch(one(i), error = function(e)
+        list(status = "error", n_metabolites = 0L, results = NULL,
+             message = conditionMessage(e), seconds = NA_real_))
+      results[[i]] <- r
+      tick(i, df$name[i])
+    }
   }
 
   # Assemble combined metabolite table + per-input summary
