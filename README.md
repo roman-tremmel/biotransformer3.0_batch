@@ -37,12 +37,18 @@ R -e 'install.packages(c("shiny","DT","processx"))'
 ## Setup
 
 The BioTransformer JAR is ~110 MB — over GitHub's 100 MB file limit — so it is
-**not** committed here. `setup.sh` downloads it from the official Wishart-lab
-Bitbucket repository and prepares two ready-to-run JARs:
+committed **split into parts** under `vendor/` (each < 95 MB). `setup.sh`
+reassembles them locally (verifying a SHA-256 checksum) and prepares two
+ready-to-run JARs — **no external download is needed**, a plain `git` checkout
+is enough:
 
 ```bash
 bash setup.sh
 ```
+
+(If the `vendor/*.part` files are ever missing, `setup.sh` falls back to
+cloning the official Wishart-lab Bitbucket repository, which needs outbound
+HTTPS access.)
 
 This produces, next to `app.R`:
 
