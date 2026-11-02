@@ -1,0 +1,17 @@
+# The BioTransformer JAR (~110 MB) exceeds GitHub's 100 MB limit and is
+# produced by setup.sh from the official download. Do not commit it.
+BioTransformer3.0*.jar
+
+# Runtime / generated
+.jnati/
+.jhome/
+*.log
+temp_moloutput/
+rsconnect/
+
+# R / editors
+.Rproj.user/
+.Rhistory
+.RData
+.DS_Store
+Thumbs.db
