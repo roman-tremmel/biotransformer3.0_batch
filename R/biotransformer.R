@@ -189,6 +189,14 @@ bt_run_one <- function(smiles, name = NA, id = NA,
 bt_run_batch <- function(df, app_dir = ".", btType = "allHuman", steps = 1L,
                          cyp_mode = "1", timeout = 300, offline = FALSE,
                          workers = 1L, xmx = NULL, progress = NULL) {
+  # Force every argument in THIS (parent) process. The caller usually passes
+  # Shiny inputs (input$btType, ...) which are lazy promises; if they were
+  # first evaluated inside a forked mclapply worker, forcing them would touch
+  # the reactive context from another process ("Reactive context was created
+  # in one process and accessed from another").
+  force(df); force(app_dir); force(btType); force(steps); force(cyp_mode)
+  force(timeout); force(offline); force(workers); force(xmx); force(progress)
+
   stopifnot("smiles" %in% names(df))
   n <- nrow(df)
   if (!"name" %in% names(df)) df$name <- ""

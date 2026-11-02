@@ -254,11 +254,19 @@ server <- function(input, output, session) {
     }
     on.exit(prog$close(), add = TRUE)
 
+    # snapshot inputs into plain values before (possibly) forking workers
+    p_btType  <- input$btType
+    p_steps   <- input$steps
+    p_cyp     <- input$cyp_mode %||% "1"
+    p_timeout <- input$timeout
+    p_offline <- isTRUE(input$offline)
+    p_workers <- input$workers
+
     out <- tryCatch(
-      bt_run_batch(df, app_dir = app_dir, btType = input$btType,
-                   steps = input$steps, cyp_mode = input$cyp_mode %||% "1",
-                   timeout = input$timeout, offline = isTRUE(input$offline),
-                   workers = input$workers, progress = cb),
+      bt_run_batch(df, app_dir = app_dir, btType = p_btType,
+                   steps = p_steps, cyp_mode = p_cyp,
+                   timeout = p_timeout, offline = p_offline,
+                   workers = p_workers, progress = cb),
       error = function(e) { showNotification(paste("Run failed:", conditionMessage(e)),
                                              type = "error", duration = NULL); NULL })
     if (is.null(out)) return()
