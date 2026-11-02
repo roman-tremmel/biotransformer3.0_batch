@@ -127,7 +127,11 @@ ui <- fluidPage(
   titlePanel(div(
     div(class = "bt-title", "BioTransformer 3.0 — batch metabolism prediction"),
     div(class = "bt-sub",
-        "Predict in-silico metabolites for many compounds at once. Paste SMILES or upload a CSV.")
+        "Predict in-silico metabolites for many compounds at once. Paste SMILES or upload a CSV."),
+    div(class = "bt-sub", style = "font-size:13px;",
+        "Powered by ", tags$a(href = "https://biotransformer.ca", target = "_blank", "BioTransformer 3.0"),
+        " — official single-compound web interface: ",
+        tags$a(href = "https://biotransformer.ca/new", target = "_blank", "biotransformer.ca/new"))
   )),
 
   sidebarLayout(

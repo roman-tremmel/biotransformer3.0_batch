@@ -19,15 +19,18 @@ BT_OUTPUT_COLS <- c(
   "Precursor InChIKey", "Precursor ALogP", "Precursor Major Isotope Mass"
 )
 
-# Biotransformer types accepted by the JAR (-b). Labels shown in the UI.
+# Biotransformer types accepted by the JAR (-b). Labels and order mirror the
+# official BioTransformer web interface. (The web UI's "Custom Human Multi-Step
+# (MultiBio)" and "Abiotic (AbioticBio)" options are not exposed as a single
+# -b type by this JAR and are omitted.)
 BT_TYPES <- c(
-  "CYP450"                        = "cyp450",
-  "All human"                     = "allHuman",
-  "Phase II"                      = "phaseII",
-  "Human gut microbial"           = "hgut",
-  "EC-based"                      = "ecbased",
-  "Human super-transformer"       = "superbio",
-  "Environmental microbial"       = "env"
+  "Phase I (CYP450) Transformation"                        = "cyp450",
+  "EC-Based Transformation"                                = "ecbased",
+  "Phase II Transformation"                                = "phaseII",
+  "Human Gut Microbial Transformation"                     = "hgut",
+  "Environmental Microbial Transformation"                 = "env",
+  "Human and Human Gut Microbial Transformation (AllHuman)" = "allHuman",
+  "Human and Human Gut Microbial Transformation (SuperBio)" = "superbio"
 )
 
 # Labels match the official BioTransformer web interface; values are the
