@@ -21,8 +21,8 @@ BT_OUTPUT_COLS <- c(
 
 # Biotransformer types accepted by the JAR (-b). Labels shown in the UI.
 BT_TYPES <- c(
-  "All human (recommended)"       = "allHuman",
   "CYP450"                        = "cyp450",
+  "All human"                     = "allHuman",
   "Phase II"                      = "phaseII",
   "Human gut microbial"           = "hgut",
   "EC-based"                      = "ecbased",

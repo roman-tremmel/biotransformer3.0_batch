@@ -143,7 +143,7 @@ ui <- fluidPage(
                 accept = c(".csv", ".txt")),
       actionLink("load_example", "load example set"),
       tags$hr(),
-      selectInput("btType", "Biotransformer", choices = BT_TYPES, selected = "allHuman"),
+      selectInput("btType", "Biotransformer", choices = BT_TYPES, selected = "cyp450"),
       conditionalPanel(
         "input.btType == 'allHuman' || input.btType == 'cyp450'",
         selectInput("cyp_mode", "CYP450 Mode", choices = BT_CYP_MODES, selected = "3"),
