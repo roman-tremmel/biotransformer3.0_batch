@@ -30,10 +30,13 @@ BT_TYPES <- c(
   "Environmental microbial"       = "env"
 )
 
+# Labels match the official BioTransformer web interface; values are the
+# JAR's -cm modes. Combined = 3, Rule Based = 1 (CypReact + rules),
+# CyProduct = 2 (CyProducts only).
 BT_CYP_MODES <- c(
-  "1 - CypReact + BioTransformer rules"            = "1",
-  "2 - CyProducts only"                            = "2",
-  "3 - Combined (CypReact + rules + CyProducts)"   = "3"
+  "Combined"   = "3",
+  "Rule Based" = "1",
+  "CyProduct"  = "2"
 )
 
 # ---- locating the runnable JAR --------------------------------------------

@@ -146,7 +146,10 @@ ui <- fluidPage(
       selectInput("btType", "Biotransformer", choices = BT_TYPES, selected = "allHuman"),
       conditionalPanel(
         "input.btType == 'allHuman' || input.btType == 'cyp450'",
-        selectInput("cyp_mode", "CYP450 mode", choices = BT_CYP_MODES, selected = "1")),
+        selectInput("cyp_mode", "CYP450 Mode", choices = BT_CYP_MODES, selected = "3"),
+        helpText(HTML("<b>Combined</b>: CypReact + rules + CyProduct &middot; ",
+                      "<b>Rule Based</b>: CypReact + BioTransformer rules &middot; ",
+                      "<b>CyProduct</b>: CyProduct only"))),
       sliderInput("steps", "Prediction steps", min = 1, max = 3, value = 1, step = 1),
       fluidRow(
         column(6, numericInput("workers", "Parallel jobs", value = 2, min = 1, max = 16, step = 1)),
