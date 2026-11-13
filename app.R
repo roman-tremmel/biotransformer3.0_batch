@@ -336,17 +336,29 @@ server <- function(input, output, session) {
                   options = list(pageLength = 15, scrollX = TRUE, dom = "ftip"))
   }, server = FALSE)
 
+  # Write a semicolon-separated CSV. Many fields (SMILES, reaction names,
+  # enzyme lists) contain commas, so a comma separator makes the file fall
+  # apart in (esp. German-locale) Excel. Semicolon separator + a UTF-8 BOM so
+  # Excel opens it correctly; decimals stay as '.' to keep SMILES/numbers intact.
+  bt_write_csv2 <- function(x, file) {
+    con <- file(file, open = "wb", encoding = "UTF-8")
+    on.exit(close(con))
+    writeChar("﻿", con, eos = NULL)  # UTF-8 BOM
+    utils::write.table(x, con, sep = ";", dec = ".", row.names = FALSE,
+                       na = "", qmethod = "double", fileEncoding = "UTF-8")
+  }
+
   output$dl_results <- downloadHandler(
     filename = function() sprintf("biotransformer_metabolites_%s.csv", Sys.Date()),
     content = function(file) {
       r <- rv$results
       if (is.null(r) || !nrow(r)) r <- data.frame(message = "no metabolites predicted")
-      utils::write.csv(r, file, row.names = FALSE, na = "")
+      bt_write_csv2(r, file)
     })
 
   output$dl_summary <- downloadHandler(
     filename = function() sprintf("biotransformer_summary_%s.csv", Sys.Date()),
-    content = function(file) utils::write.csv(rv$summary, file, row.names = FALSE, na = ""))
+    content = function(file) bt_write_csv2(rv$summary, file))
 }
 
 `%||%` <- function(a, b) if (is.null(a) || length(a) == 0) b else a
